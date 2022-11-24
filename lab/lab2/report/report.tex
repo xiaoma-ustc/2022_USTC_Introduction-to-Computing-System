@@ -181,6 +181,11 @@ $$R7 \rightarrow x3103$$
     \centering
     \includegraphics[scale=0.8]{Output2.png}
 \end{figure}
+
+\section*{实验思考}
+\subsection*{如何提高循环效率}
+    如果不在循环外计算$-p,-q$，那么每循环一次都要计算$-p,-q$，所以首先在循环外计算
+    牺牲了两个寄存器空间，提高了循环效率。
 \end{document}
 
 
