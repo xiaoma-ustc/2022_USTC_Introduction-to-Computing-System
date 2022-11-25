@@ -38,7 +38,7 @@
     captionpos=b,                   % sets the caption-position to bottom
     breaklines=true,                % sets automatic line breaking
     breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
-    title=\lstname,                   % show the filename of files included with \lstinputlisting;
+    % title=\lstname,                   % show the filename of files included with \lstinputlisting;
                             % also try caption instead of title
     keywordstyle=\color{blue},          % keyword style
     commentstyle=\color{dkgreen},       % comment style
@@ -125,14 +125,14 @@ $$p = 2^{k} \quad (2 \leq k \leq 10),10\leq q \leq 1024$$
 \subsection*{代码讲解}
 \subsubsection*{初始化变量}
 从内存中读取$p,q,N$ 3个变量，即$$R0 \leftarrow p, R1 \leftarrow q, R2 \leftarrow N$$
-\begin{lstlisting}
+\begin{lstlisting}[name = code, firstnumber = 1]
     LD R0, x0FF
     LD R1, x0FF
     LD R2, x0FF
 \end{lstlisting}
 \subsubsection*{减法预处理}
 已知取余操作要进行减法运算，故首先得到$p,q$的相反数，即$$R3 \leftarrow -p, R4 \leftarrow -q$$
-\begin{lstlisting}
+\begin{lstlisting}[name = code, firstnumber = last]
     NOT R3, R0
     ADD R3, R3, x1
     NOT R4, R1
@@ -141,7 +141,7 @@ $$p = 2^{k} \quad (2 \leq k \leq 10),10\leq q \leq 1024$$
 \subsubsection*{取余操作}
 分别求$F(N-2),F(N-1)$的余数，使用的变量考虑了LC-3寄存器的数量，即
 $$R5 \leftarrow F(N-2) \% p, R7 \leftarrow F(N-1) \% q$$
-\begin{lstlisting}
+\begin{lstlisting}[name = code, firstnumber = last]
     ADD R5, R5, R3 
     BRzp #-2
     ADD R5, R5, R0
@@ -153,20 +153,20 @@ $$R5 \leftarrow F(N-2) \% p, R7 \leftarrow F(N-1) \% q$$
 \subsubsection*{求和}
 求和得到$F(N)$，即
 $$R7 \leftarrow F(N-2) \% + F(N-1) \% q$$
-\begin{lstlisting}
+\begin{lstlisting}[name = code, firstnumber = last]
     ADD R7, R7, R5
 \end{lstlisting}
 \subsubsection*{滑动窗口}
 得到计算结果后滑动窗口，准备下一个计算，即
 $$R5 \leftarrow R6, R6 \leftarrow R7$$
-\begin{lstlisting}
+\begin{lstlisting}[name = code, firstnumber = last]
     ADD R5, R6, #0
     ADD R6, R7, #0
 \end{lstlisting}
 \subsubsection*{存储结果}
 在迭代结束后，将计算结过存储至x3103，即
 $$R7 \rightarrow x3103$$
-\begin{lstlisting}
+\begin{lstlisting}[name = code, firstnumber = last]
     ST R7, x0EC
 \end{lstlisting}
 
