@@ -170,7 +170,20 @@ $$R7 \rightarrow x3103$$
     ST R7, x0EC
 \end{lstlisting}
 
+\section*{如何提高循环效率}
+观察$p$可以发现，$p$为2的整数次方，若用16位二进制数表示则只有一位为1，那么可以采用更简单的操作对$F(N-2)$进行取余。
+\subsubsection*{更高效的取余操作}
+若将$p$减去1以后将结果和$F(N-2)$进行与操作，则$F(N-2)$只有低位为1的部分被保留，即为$p$的余数。\\
+\begin{lstlisting}
+    ADD R3, R0, #-1
+    AND R5, R5, R3 
+\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.3]{quyu.png}
+\end{figure}
 \section*{实验结果}
+\subsection*{未改进取余操作}
 依次对实验文档给出的例子进行测试，结果如下：
 \begin{figure}[H]
     \centering
@@ -182,10 +195,18 @@ $$R7 \rightarrow x3103$$
     \includegraphics[scale=0.8]{Output2.png}
 \end{figure}
 
-\section*{实验思考}
-\subsection*{如何提高循环效率}
-    如果不在循环外计算$-p,-q$，那么每循环一次都要计算$-p,-q$，所以首先在循环外计算
-    牺牲了两个寄存器空间，提高了循环效率。
+\subsection*{改进取余操作}
+依次对实验文档给出的例子进行测试，结果如下：
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Output4.png}
+\end{figure}
+自行编写了部分测试例子，结果如下：
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Output5.png}
+\end{figure}
+可以发现改变取余操作大大提升了计算效率。
 \end{document}
 
 
