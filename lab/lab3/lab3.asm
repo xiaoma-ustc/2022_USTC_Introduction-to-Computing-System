@@ -11,7 +11,8 @@ WHILE BRz UPDATE
     LDR R2, R1, #0
     ADD R1, R1, #1
     NOT R6, R3
-    AND R6, R6, R2
+    ADD R6, R6, #1
+    ADD R6, R2, R6
     BRnp UPDATE
     ADD R4, R4, #1
 BACK ADD R3, R2, #0
@@ -19,6 +20,7 @@ BACK ADD R3, R2, #0
     BRnzp WHILE
     
 UPDATE NOT R6, R4
+    ADD R6, R6, #1
     ADD R6, R5, R6
     BRzp #1
     ADD R5, R4, #0
