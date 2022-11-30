@@ -181,6 +181,7 @@ static std::string FormatLine(const std::string &line) {
         }
     }
     transform(instruction.begin(),instruction.end(),instruction.begin(),::toupper);
+    return instruction;
 }
 
 static int RecognizeNumberValue(const std::string &str) {

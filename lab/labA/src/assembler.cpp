@@ -30,13 +30,20 @@ std::string assembler::TranslateOprand(unsigned int current_address, std::string
     if (item != -1) {
         // str is a label
         // TO BE DONE
+        auto temp = item;
+        std::cout<<"temp :"<<temp<<"current :"<<current_address<<std::endl;
+        std::cout<<str<<temp - current_address - 1<<std::endl;
+        return NumberToAssemble(temp - current_address - 1).substr(16 - opcode_length);
     }
     if (str[0] == 'R') {
         // str is a register
         // TO BE DONE
+        str[0] = '#';
+        return NumberToAssemble(str).substr(16 - opcode_length);
     } else {
         // str is an immediate number
         // TO BE DONE
+        return NumberToAssemble(str).substr(16 - opcode_length);
     }
 }
 
@@ -51,7 +58,22 @@ std::string assembler::LineLabelSplit(const std::string &line,
         // * This is an label
         // save it in label_map
         // TO BE DONE
+        /* if (first_whitespace_position == std::string::npos)
+        {
+            label_map.AddLabel(first_token, current_address);
+            std::cout<<first_token<<"current"<<current_address<<std::endl;
+        }
+        else
+        {
+            std::string subline = line.substr(first_whitespace_position + 1);
+            auto second_whitespace_position = subline.find(' ');
+            std::cout<<subline.substr(second_whitespace_position + 1)<<std::endl;
+            auto add = RecognizeNumberValue(subline.substr(second_whitespace_position + 1));
+            label_map.AddLabel(first_token, add);
+            std::cout<<first_token<<"add"<<add<<std::endl;
+        } */
         label_map.AddLabel(first_token, current_address);
+        
 
         // remove label from the line
         if (first_whitespace_position == std::string::npos) {
@@ -183,13 +205,29 @@ std::string assembler::TranslatePseudo(std::stringstream &command_stream) {
         // TO BE DONE
         std::string number_str;
         command_stream >> number_str;
-        output_line = NumberToAssemble(number_str);
+        auto iter = RecognizeNumberValue(number_str);
+        for(int i = 0; i < iter; ++i)
+        {
+            output_line += NumberToAssemble(0);
+            if(i < iter - 1)
+            {
+                output_line += '\n';
+            }
+        }
+        
     } else if (pseudo_opcode == ".STRINGZ") {
         // Fill string here
         // TO BE DONE
         std::string str;
         command_stream >> str;
-        output_line = str;
+        std::cout<<"string size :"<<str.size()<<std::endl;
+        for(int i = 1;i < str.size() - 1; ++i)
+        {
+            int temp = str[i];
+            output_line += NumberToAssemble(temp);
+            output_line += '\n';
+        }
+        output_line += NumberToAssemble(0);
     }
     return output_line;
 }
@@ -264,7 +302,7 @@ std::string assembler::TranslateCommand(std::stringstream &command_stream,
         case 2:
             // "BR"
             // TO BE DONE
-            output_line += "0000000";
+            output_line += "0000111";
             if (operand_list_size != 1) {
                 // @ Error operand numbers
                 exit(-30);
@@ -310,6 +348,7 @@ std::string assembler::TranslateCommand(std::stringstream &command_stream,
                 exit(-30);
             }
             output_line += TranslateOprand(current_address, operand_list[0], 9);
+            break;
         case 7:
             // "BRNP"
             // TO BE DONE
@@ -459,14 +498,13 @@ std::string assembler::TranslateCommand(std::stringstream &command_stream,
         case 21:
             // STI
             // TO BE DONE
-            output_line += "0111";
-            if (operand_list_size != 3) {
+            output_line += "1011";
+            if (operand_list_size != 2) {
                 // @ Error operand numbers
                 exit(-30);
             }
             output_line += TranslateOprand(current_address, operand_list[0]);
-            output_line += TranslateOprand(current_address, operand_list[1]);
-            output_line += TranslateOprand(current_address, operand_list[2], 6);
+            output_line += TranslateOprand(current_address, operand_list[1], 9);
             break;
         case 22:
             // STR
