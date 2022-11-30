@@ -142,12 +142,26 @@ int assembler::firstPass(std::string &input_filename) {
         if (first_token == ".BLKW") {
             // modify current_address
             // TO BE DONE
-            current_address += 1;
+            auto num_temp = RecognizeNumberValue(operand);
+            if (num_temp == std::numeric_limits<int>::max()) {
+                // @ Error Invalid Number input @ FILL
+                return -4;
+            }
+            if (num_temp > 65535 || num_temp < -65536) {
+                // @ Error Too large or too small value  @ FILL
+                return -5;
+            }
+            current_address += num_temp - 1;
         }
         if (first_token == ".STRINGZ") {
             // modify current_address
             // TO BE DONE
-            current_address += 1;
+            if (operand[0] != '\"' || operand[operand.size() - 1] != '\"')
+                {
+                    // @ Error String format error
+                    return -6;
+                }
+            current_address += operand.size() - 3;
         }
     }
     // OK flag
