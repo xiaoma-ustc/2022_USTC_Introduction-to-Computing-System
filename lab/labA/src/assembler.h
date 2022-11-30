@@ -148,6 +148,9 @@ static inline char DecToChar(const int &num) {
 // trim string from both left & right
 static inline std::string &Trim(std::string &s) {
     // TO BE DONE
+    s.erase(0, s.find_first_not_of(' '));
+    s.erase(s.find_last_not_of(' ') + 1);
+    return s;
 }
 
 // Format one line from asm file, do the following:
@@ -159,27 +162,94 @@ static inline std::string &Trim(std::string &s) {
 // Note: please implement function Trim first
 static std::string FormatLine(const std::string &line) {
     // TO BE DONE
+    std::string new_line = line;
+    new_line = Trim(new_line);
+    std::string instruction;
+    for(auto c : new_line)
+    {
+        if(c == ';')
+        {
+            break;
+        }
+        else if(c == ',' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v')
+        {
+            instruction.push_back(' ');
+        }
+        else
+        {
+            instruction.push_back(c);
+        }
+    }
+    transform(instruction.begin(),instruction.end(),instruction.begin(),::toupper);
+    return instruction;
 }
 
 static int RecognizeNumberValue(const std::string &str) {
     // Convert string `str` into a number and return it
     // TO BE DONE
+    int num;
+    if(str[0] == '#')
+    {
+        num = std::stoi(str.substr(1));
+    }
+    else if(str[0] == 'x' || str[0] == 'X')
+    {
+        num = std::stoi(str.substr(1), nullptr, 16);
+    }
+    else
+    {
+        num = std::numeric_limits<int>::max();
+    }
+    return num;
 }
 
 static std::string NumberToAssemble(const int &number) {
     // Convert `number` into a 16 bit binary string
     // TO BE DONE
+    int16_t num = number;
+    uint16_t it = 0x8000;
+    std::string str;
+    for(int i = 0; i < 16; ++i)
+    {
+        if(num & it)
+        {
+            str.push_back('1');
+        }
+        else
+        {
+            str.push_back('0');
+        }
+        it = it >> 1;
+    }
+    return str;
 }
+
 
 static std::string NumberToAssemble(const std::string &number) {
     // Convert `number` into a 16 bit binary string
     // You might use `RecognizeNumberValue` in this function
     // TO BE DONE
+    int new_num = RecognizeNumberValue(number);
+    return NumberToAssemble(new_num);
 }
 
 static std::string ConvertBin2Hex(const std::string &bin) {
     // Convert the binary string `bin` into a hex string
     // TO BE DONE
+    std::string str;
+    for(int i = 0; i < bin.size(); i += 4)
+    {
+        int temp;
+        for(int j = 0; j < 4; ++j)
+        {
+            if(bin[i + j] == '1')
+            {
+                temp += (1 << (3 - j));
+            }
+        }
+        str += DecToChar(temp);
+    }
+    return str;
 }
 
 class assembler {
