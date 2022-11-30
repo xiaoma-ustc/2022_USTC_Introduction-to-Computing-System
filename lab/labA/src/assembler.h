@@ -148,6 +148,9 @@ static inline char DecToChar(const int &num) {
 // trim string from both left & right
 static inline std::string &Trim(std::string &s) {
     // TO BE DONE
+    s.erase(0, s.find_first_not_of(' '));
+    s.erase(s.find_last_not_of(' ') + 1);
+    return s;
 }
 
 // Format one line from asm file, do the following:
@@ -159,6 +162,25 @@ static inline std::string &Trim(std::string &s) {
 // Note: please implement function Trim first
 static std::string FormatLine(const std::string &line) {
     // TO BE DONE
+    std::string new_line = line;
+    new_line = Trim(new_line);
+    std::string instruction;
+    for(auto c : new_line)
+    {
+        if(c == ';')
+        {
+            break;
+        }
+        else if(c == ',' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v')
+        {
+            instruction.push_back(' ');
+        }
+        else
+        {
+            instruction.push_back(c);
+        }
+    }
+    transform(instruction.begin(),instruction.end(),instruction.begin(),::toupper);
 }
 
 static int RecognizeNumberValue(const std::string &str) {
