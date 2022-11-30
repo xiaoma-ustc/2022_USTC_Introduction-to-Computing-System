@@ -51,6 +51,7 @@ std::string assembler::LineLabelSplit(const std::string &line,
         // * This is an label
         // save it in label_map
         // TO BE DONE
+        label_map.AddLabel(first_token, current_address);
 
         // remove label from the line
         if (first_whitespace_position == std::string::npos) {
@@ -141,10 +142,12 @@ int assembler::firstPass(std::string &input_filename) {
         if (first_token == ".BLKW") {
             // modify current_address
             // TO BE DONE
+            current_address += 1;
         }
         if (first_token == ".STRINGZ") {
             // modify current_address
             // TO BE DONE
+            current_address += 1;
         }
     }
     // OK flag
@@ -164,6 +167,7 @@ std::string assembler::TranslatePseudo(std::stringstream &command_stream) {
     } else if (pseudo_opcode == ".BLKW") {
         // Fill 0 here
         // TO BE DONE
+        
     } else if (pseudo_opcode == ".STRINGZ") {
         // Fill string here
         // TO BE DONE
