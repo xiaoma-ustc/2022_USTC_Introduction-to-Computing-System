@@ -167,10 +167,15 @@ std::string assembler::TranslatePseudo(std::stringstream &command_stream) {
     } else if (pseudo_opcode == ".BLKW") {
         // Fill 0 here
         // TO BE DONE
-        
+        std::string number_str;
+        command_stream >> number_str;
+        output_line = NumberToAssemble(number_str);
     } else if (pseudo_opcode == ".STRINGZ") {
         // Fill string here
         // TO BE DONE
+        std::string str;
+        command_stream >> str;
+        output_line = str;
     }
     return output_line;
 }
@@ -219,29 +224,98 @@ std::string assembler::TranslateCommand(std::stringstream &command_stream,
             }
             break;
         case 1:
+        /*
+            * TODO:
+        */
             // "AND"
             // TO BE DONE
+            output_line += "0101";
+            if (operand_list_size != 3) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += TranslateOprand(current_address, operand_list[1]);
+            if(operand_list[2][0] == 'R')
+            {
+                output_line += "000";
+                output_line += TranslateOprand(current_address, operand_list[2]);
+            }
+            else
+            {
+                output_line += "1";
+                output_line += TranslateOprand(current_address, operand_list[2], 5);
+            }
+            break;
         case 2:
             // "BR"
             // TO BE DONE
+            output_line += "0000000";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 9);
+            break;
         case 3:
             // "BRN"
             // TO BE DONE
+            output_line += "0000100";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 9);
+            break;
         case 4:
             // "BRZ"
             // TO BE DONE
+            output_line += "0000010";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 9);
+            break;
         case 5:
             // "BRP"
             // TO BE DONE
+            output_line += "0000001";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 9);
+            break;
         case 6:
             // "BRNZ"
             // TO BE DONE
+            output_line += "0000110";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 9);
         case 7:
             // "BRNP"
             // TO BE DONE
+            output_line += "0000101";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 9);
+            break;
         case 8:
             // "BRZP"
             // TO BE DONE
+            output_line += "0000011";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 9);
+            break;
         case 9:
             // "BRNZP"
             output_line += "0000111";
@@ -254,28 +328,93 @@ std::string assembler::TranslateCommand(std::stringstream &command_stream,
         case 10:
             // "JMP"
             // TO BE DONE
+            output_line += "1100000";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += "000000";
+            break;
         case 11:
             // "JSR"
             // TO BE DONE
+            output_line += "01001";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 11);
+            break;
         case 12:
             // "JSRR"
             // TO BE DONE
+            output_line += "0100000";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += "000000";
             break;
         case 13:
             // "LD"
             // TO BE DONE
+            output_line += "0010";
+            if (operand_list_size != 2) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += TranslateOprand(current_address, operand_list[1], 9);
+            break;
         case 14:
             // "LDI"
             // TO BE DONE
+            output_line += "1010";
+            if (operand_list_size != 2) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += TranslateOprand(current_address, operand_list[1], 9);
+            break;
         case 15:
             // "LDR"
             // TO BE DONE
+            
+            output_line += "0110";
+            if (operand_list_size != 3) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += TranslateOprand(current_address, operand_list[1]);
+            output_line += TranslateOprand(current_address, operand_list[2], 9);
+            break;
         case 16:
             // "LEA"
             // TO BE DONE
+            output_line += "1110";
+            if (operand_list_size != 2) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += TranslateOprand(current_address, operand_list[9], 9);
+            break;
         case 17:
             // "NOT"
             // TO BE DONE
+            output_line += "1001";
+            if (operand_list_size != 2) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += TranslateOprand(current_address, operand_list[1]);
+            output_line += "111111";
+            break;
         case 18:
             // RET
             output_line += "1100000111000000";
@@ -287,6 +426,12 @@ std::string assembler::TranslateCommand(std::stringstream &command_stream,
         case 19:
             // RTI
             // TO BE DONE
+            output_line += "1000000000000000";
+            if (operand_list_size != 0) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            break;
         case 20:
             // ST
             output_line += "0011";
@@ -300,12 +445,37 @@ std::string assembler::TranslateCommand(std::stringstream &command_stream,
         case 21:
             // STI
             // TO BE DONE
+            output_line += "0111";
+            if (operand_list_size != 3) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += TranslateOprand(current_address, operand_list[1]);
+            output_line += TranslateOprand(current_address, operand_list[2], 6);
+            break;
         case 22:
             // STR
             // TO BE DONE
+            output_line += "0111";
+            if (operand_list_size != 3) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0]);
+            output_line += TranslateOprand(current_address, operand_list[1]);
+            output_line += TranslateOprand(current_address, operand_list[2], 6);
+            break;
         case 23:
             // TRAP
             // TO BE DONE
+            output_line += "11110000";
+            if (operand_list_size != 1) {
+                // @ Error operand numbers
+                exit(-30);
+            }
+            output_line += TranslateOprand(current_address, operand_list[0], 8);
+            break;
         default:
             // Unknown opcode
             // @ Error

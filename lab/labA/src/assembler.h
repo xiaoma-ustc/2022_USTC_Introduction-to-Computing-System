@@ -223,6 +223,7 @@ static std::string NumberToAssemble(const int &number) {
     return str;
 }
 
+
 static std::string NumberToAssemble(const std::string &number) {
     // Convert `number` into a 16 bit binary string
     // You might use `RecognizeNumberValue` in this function
