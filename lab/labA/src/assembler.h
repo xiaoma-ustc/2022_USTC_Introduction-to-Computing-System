@@ -186,22 +186,68 @@ static std::string FormatLine(const std::string &line) {
 static int RecognizeNumberValue(const std::string &str) {
     // Convert string `str` into a number and return it
     // TO BE DONE
+    int num;
+    if(str[0] == '#')
+    {
+        num = std::stoi(str.substr(1));
+    }
+    else if(str[0] == 'x' || str[0] == 'X')
+    {
+        num = std::stoi(str.substr(1), nullptr, 16);
+    }
+    else
+    {
+        num = std::numeric_limits<int>::max();
+    }
+    return num;
 }
 
 static std::string NumberToAssemble(const int &number) {
     // Convert `number` into a 16 bit binary string
     // TO BE DONE
+    int16_t num = number;
+    uint16_t it = 0x8000;
+    std::string str;
+    for(int i = 0; i < 16; ++i)
+    {
+        if(num & it)
+        {
+            str.push_back('1');
+        }
+        else
+        {
+            str.push_back('0');
+        }
+        it = it >> 1;
+    }
+    return str;
 }
 
 static std::string NumberToAssemble(const std::string &number) {
     // Convert `number` into a 16 bit binary string
     // You might use `RecognizeNumberValue` in this function
     // TO BE DONE
+    int new_num = RecognizeNumberValue(number);
+    return NumberToAssemble(new_num);
 }
 
 static std::string ConvertBin2Hex(const std::string &bin) {
     // Convert the binary string `bin` into a hex string
     // TO BE DONE
+    std::string str;
+    for(int i = 0; i < bin.size(); i += 4)
+    {
+        int temp;
+        for(int j = 0; j < 4; ++j)
+        {
+            if(bin[i + j] == '1')
+            {
+                temp += (1 << (3 - j));
+            }
+        }
+        str += DecToChar(temp);
+    }
+    return str;
 }
 
 class assembler {
