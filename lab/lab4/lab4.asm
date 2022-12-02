@@ -1,0 +1,83 @@
+.ORIG x3000
+LD R0, SCORE
+ADD R1, R0, #15
+AND R6, R6, #0
+AND R7, R7, #0
+LOOPA 
+AND R2, R2, #0 
+ADD R2, R0, #0 ; max = i
+AND R3, R3, #0 
+ADD R3, R0, #0 ; j = i
+BRnzp LOOPB
+RETB
+LDR R4, R2, #0
+LDR R5, R0, #0
+STR R4, R0, #0
+STR R5, R2, #0 ; swap(score[i], score[max])
+LD R3, RESULTS
+LD R2, SCORE
+ADD R3, R2, R3
+NOT R2, R0
+ADD R2, R2, #1
+ADD R2, R2, R1
+ADD R3, R3, R2
+STR R4, R3, #0 ; sortScore[16 - i] = score[i]
+BRnzp JUDGE
+RETJ
+ADD R0, R0, #1
+NOT R4, R0
+ADD R4, R4, #1
+ADD R4, R1, R4 ; i < 16 ?
+BRn STORE
+BRnzp LOOPA
+
+
+LOOPB
+LDR R4, R2, #0
+LDR R5, R3, #0
+NOT R4, R4
+ADD R4, R4, #1
+ADD R4, R5, R4 ; score[max] < score[j] ?
+BRnz #2
+AND R2, R2, #0 ; max = j
+ADD R2, R3, #0
+ADD R3, R3, #1
+NOT R4, R3
+ADD R4, R4, #1
+ADD R4, R1, R4 ; j < 16 ?
+BRzp LOOPB
+BRnzp RETB
+
+
+JUDGE
+LDR R4, R0, #0
+LD R5, SCOREMARKA 
+ADD R4, R4, R5 ; score[i] >= 85?
+BRn #4
+ADD R5, R6, #-4 ; num_a < 4?
+BRz #4
+ADD R6, R6, #1
+BRnzp RETJ
+ADD R4, R4, #10 ; score[i] >= 75?
+BRn RETJ
+ADD R5, R6, R7 
+ADD R5, R5, #-8 ; num_a + num_b < 8 ?
+BRz RETJ
+ADD R7, R7, #1
+BRnzp RETJ
+
+
+STORE
+STI R6, RESULTA
+STI R7, RESULTB
+
+HALT
+
+
+RESULTA .FILL x5100
+RESULTB .FILL x5101
+RESULTS .FILL x1000
+SCORE .FILL x4000
+SCOREMARKA .FILL #-85
+
+.END
