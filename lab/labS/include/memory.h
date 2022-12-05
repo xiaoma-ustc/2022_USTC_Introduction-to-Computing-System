@@ -15,7 +15,7 @@ inline int16_t TranslateInstruction(std::string &line) {
     int16_t result = 0;
     if (line.size() == kInstructionLength) {
         for (int index = 0; index < kInstructionLength; ++index) {
-            result = (result << 1) | (line[index] & 1);
+            result = (result << 1) | ((line[index] - '0') & 1);
         }
     }
     return result;

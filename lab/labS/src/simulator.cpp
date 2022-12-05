@@ -12,11 +12,34 @@ template <typename T, unsigned B>
 inline T SignExtend(const T x) {
     // Extend the number
     // TO BE DONE
+    T ret = x;
+    T mask = 1 << (B - 1);
+    if(mask & x)
+    {
+        while(mask)
+        {
+            mask = mask << 1;
+            ret = ret | mask;
+        }
+    }
+    return ret;
 }
 
 void virtual_machine_tp::UpdateCondRegister(int regname) {
     // Update the condition register
     // TO BE DONE
+    if(reg[regname] < 0)
+    {
+        reg[R_COND] = 4;
+    }
+    else if(reg[R_COND] == 0)
+    {
+        reg[R_COND] = 2;
+    }
+    else
+    {
+        reg [R_COND] = 1;
+    }
 }
 
 void virtual_machine_tp::VM_ADD(int16_t inst) {
@@ -38,6 +61,20 @@ void virtual_machine_tp::VM_ADD(int16_t inst) {
 
 void virtual_machine_tp::VM_AND(int16_t inst) {
     // TO BE DONE
+    int flag = inst & 0b100000;
+    int dr = (inst >> 9) & 0x7;
+    int sr1 = (inst >> 6) & 0x7;
+    if(flag)
+    {
+        int16_t imm = SignExtend<int16_t, 5>(inst & 0b11111);
+        reg[dr] = reg[sr1] & imm;
+    }
+    else
+    {
+        int sr2 = inst & 0x7;
+        reg[dr] = reg[sr1] & reg[sr2];
+    }
+    UpdateCondRegister(dr);
 }
 
 void virtual_machine_tp::VM_BR(int16_t inst) {
@@ -54,10 +91,22 @@ void virtual_machine_tp::VM_BR(int16_t inst) {
 
 void virtual_machine_tp::VM_JMP(int16_t inst) {
     // TO BE DONE
+    reg[R_PC] = reg[(inst >> 6) & 0x7];
 }
 
 void virtual_machine_tp::VM_JSR(int16_t inst) {
     // TO BE DONE
+    int flag = inst & 0x800;
+    int16_t temp = reg[R_PC];
+    if(flag)
+    {
+        reg[R_PC] += SignExtend<int16_t, 11>(inst & 0x7FF);
+    }
+    else
+    {
+        reg[R_PC] = reg[(inst >> 6) & 0x7];
+    }
+    reg[R_R7] = temp;
 }
 
 void virtual_machine_tp::VM_LD(int16_t inst) {
@@ -69,18 +118,34 @@ void virtual_machine_tp::VM_LD(int16_t inst) {
 
 void virtual_machine_tp::VM_LDI(int16_t inst) {
     // TO BE DONE
+    int dr = (inst >> 9) & 0x7;
+    int16_t offset = SignExtend<int16_t, 9>(inst & 0x1FF);
+    reg[dr] = mem[mem[reg[R_PC] + offset]];
+    UpdateCondRegister(dr);
 }
 
 void virtual_machine_tp::VM_LDR(int16_t inst) {
     // TO BE DONE
+    int dr = (inst >> 9) & 0x7;
+    int base = (inst >> 6) & 0x7;
+    int16_t offset = SignExtend<int16_t, 6>(inst & 0x3F);
+    reg[dr] = mem[reg[base] + offset];
+    UpdateCondRegister(dr);
 }
 
 void virtual_machine_tp::VM_LEA(int16_t inst) {
     // TO BE DONE
+    int dr = (inst >> 9) & 0x7;
+    int16_t offset = SignExtend<int16_t, 9>(inst & 0x1FF);
+    reg[dr] = reg[R_PC] + offset;
 }
 
 void virtual_machine_tp::VM_NOT(int16_t inst) {
     // TO BE DONE
+    int dr = (inst >> 9) & 0x7;
+    int sr = (inst >> 6) & 0x7;
+    reg[dr] = ~reg[sr];
+    UpdateCondRegister(dr);
 }
 
 void virtual_machine_tp::VM_RTI(int16_t inst) {
@@ -89,6 +154,7 @@ void virtual_machine_tp::VM_RTI(int16_t inst) {
 
 void virtual_machine_tp::VM_ST(int16_t inst) {
     // TO BE DONE
+    
 }
 
 void virtual_machine_tp::VM_STI(int16_t inst) {
