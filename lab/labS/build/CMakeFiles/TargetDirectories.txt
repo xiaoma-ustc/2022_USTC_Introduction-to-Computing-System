@@ -1,0 +1,3 @@
+/home/xiaoma/Desktop/2022_USTC_Introduction-to-Computing-System/lab/labS/build/CMakeFiles/rebuild_cache.dir
+/home/xiaoma/Desktop/2022_USTC_Introduction-to-Computing-System/lab/labS/build/CMakeFiles/lc3simulator.dir
+/home/xiaoma/Desktop/2022_USTC_Introduction-to-Computing-System/lab/labS/build/CMakeFiles/edit_cache.dir

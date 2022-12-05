@@ -10,7 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
-
+#include <bitset>
 #include <array>
 #include <vector>
 #include <cmath>

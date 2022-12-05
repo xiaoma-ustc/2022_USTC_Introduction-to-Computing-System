@@ -154,15 +154,24 @@ void virtual_machine_tp::VM_RTI(int16_t inst) {
 
 void virtual_machine_tp::VM_ST(int16_t inst) {
     // TO BE DONE
-    
+    int sr = (inst >> 9) & 0x7;
+    int16_t offset = SignExtend<int16_t, 9>(inst & 0x1FF);
+    mem[reg[R_PC + offset]] = reg[sr];
 }
 
 void virtual_machine_tp::VM_STI(int16_t inst) {
     // TO BE DONE
+    int sr = (inst >> 9) & 0x7;
+    int16_t offset = SignExtend<int16_t, 9>(inst & 0x1FF);
+    mem[mem[reg[R_PC] + offset]] = reg[sr];
 }
 
 void virtual_machine_tp::VM_STR(int16_t inst) {
     // TO BE DONE
+    int sr = (inst >> 9) & 0x7;
+    int base = (inst >> 6) & 0x7;
+    int16_t offset = SignExtend<int16_t, 6>(inst & 0x3F);
+    mem[reg[base] + offset] = reg[sr];
 }
 
 void virtual_machine_tp::VM_TRAP(int16_t inst) {
@@ -170,6 +179,59 @@ void virtual_machine_tp::VM_TRAP(int16_t inst) {
     // if (trapnum == 0x25)
     //     exit(0);
     // TODO: build trap program
+    int trap_num = inst & 0xFF;
+    if(trap_num == 0x20)
+    {
+        char temp;
+        std::cin>>temp;
+        reg[R_R0] = temp;
+    }
+    else if(trap_num == 0x21)
+    {
+        char temp = reg[R_R0] & 0xFF;
+        std::cout<<temp<<std::endl;
+    }
+    else if(trap_num == 0x22)
+    {
+        int16_t address = reg[R_R0];
+        char temp;
+        while(mem[address])
+        {
+            temp = mem[address] & 0xFF;
+            std::cout<<temp;
+            ++address;
+        }
+        std::cout<<std::endl;
+    }
+    else if(trap_num == 0x23)
+    {
+        char temp;
+        std::cout<<"Please input a character :";
+        std::cin>>temp;
+        std::cout<<temp<<std::endl;
+        reg[R_R0] = temp & 0xFF;
+    }
+    else if(trap_num == 0x24)
+    {
+        char temp;
+        int16_t address = reg[R_R0];
+        while(mem[address])
+        {
+            temp = mem[address] & 0xFF;
+            std::cout<<temp;
+            temp = (mem[address] >> 8) & 0xFF;
+            if(temp)
+            {
+                std::cout<<temp;
+            }
+            ++address;
+        }
+        std::cout<<std::endl;
+    }
+    else if(trap_num == 0x25)
+    {
+        exit(0);
+    }
 }
 
 virtual_machine_tp::virtual_machine_tp(const int16_t address, const std::string &memfile, const std::string &regfile) {
@@ -225,30 +287,121 @@ int16_t virtual_machine_tp::NextStep() {
         break;
         case O_AND:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "AND" << std::endl;
+        }
+        VM_AND(current_instruct);
+        break;
+
         case O_BR:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "BR" << std::endl;
+        }
+        VM_BR(current_instruct);
+        break;
+
         case O_JMP:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "JMP" << std::endl;
+        }
+        VM_JMP(current_instruct);
+        break;
+
         case O_JSR:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "JSR" << std::endl;
+        }
+        VM_JSR(current_instruct);
+        break;
+
         case O_LD:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "LD" << std::endl;
+        }
+        VM_LD(current_instruct);
+        break;
+
         case O_LDI:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "LDI" << std::endl;
+        }
+        VM_LDI(current_instruct);
+        break;
+
         case O_LDR:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "LDR" << std::endl;
+        }
+        VM_LDR(current_instruct);
+        break;
+
         case O_LEA:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "LEA" << std::endl;
+        }
+        VM_LEA(current_instruct);
+        break;
+
         case O_NOT:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "NOT" << std::endl;
+        }
+        VM_NOT(current_instruct);
+        break;
+
         case O_RTI:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "RTI" << std::endl;
+        }
+        VM_RTI(current_instruct);
+        break;
+
         case O_ST:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "ST" << std::endl;
+        }
+        VM_ST(current_instruct);
+        break;
+
         case O_STI:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "STI" << std::endl;
+        }
+        VM_STI(current_instruct);
+        break;
+
         case O_STR:
         // TO BE DONE
+        if(gIsDetailedMode)
+        {
+            std::cout << "STR" << std::endl;
+        }
+        VM_STR(current_instruct);
+        break;
+
         case O_TRAP:
         if (gIsDetailedMode) {
             std::cout << "TRAP" << std::endl;
@@ -266,6 +419,7 @@ int16_t virtual_machine_tp::NextStep() {
     if (current_instruct == 0) {
         // END
         // TODO: add more detailed judge information
+        std::cout << std::endl << "END" << std::endl;
         return 0;
     }
     return reg[R_PC];
