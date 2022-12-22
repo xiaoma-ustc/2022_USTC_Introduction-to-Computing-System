@@ -38,32 +38,22 @@ START   LD R0, SITESTU
         JSR DELAY
 DONE1   LDI R2, KBSR1
         BRzp START
-        LEA R7, #1
         JSR DELAY
 DONE3   ADD R4, R4, #0
         BRnz RENEW
         AND R4, R4, #0
         LD R0, SITEH  
         trap x22
-HONOI   ST R3, DONE2
-        LD R5, DONE2
-        AND R6, R6, #0
-L4      ST R1, Save6
-        ST R0, Save7
-        ADD R5, R5, #0
-        BRz RETURN1
-        ADD R6, R6, R6
-        ADD R6, R6, #1
-        ADD R5, R5, #-1
-        BRp L4
-RETURN1 AND R0, R0, #0
-        ADD R0, R6, #0
-        AND R6, R6, #0
+        ADD R5, R3, #0
+        AND R0, R0, #0
+        LD R6, STACK
+        JSR HONOI
         AND R1, R1, #0
+        AND R6, R6, #0
 L5      ADD R6, R6, #1
         LD R3, NUM2
         ADD R0, R0, R3
-        BRp L5
+        BRzp L5
         LD R3, NUM3
         ADD R1, R0, R3
         ADD R6, R6, #-1
@@ -71,27 +61,46 @@ L5      ADD R6, R6, #1
         ADD R0, R6, #0
         BRz #2
         ADD R0, R0, R3
-        trap x21
+OUT1    trap x21
         ADD R0, R1, #0
         AND R6, R6, #0
 L6      ADD R6, R6, #1
         ADD R0, R0, #-10
-        BRp L6
+        BRzp L6
         ADD R1, R0, #10
         ADD R6, R6, #-1
         ADD R0, R6, #0
         BRz #2
         ADD R0, R0, R3
-        trap x21
+OUT2    trap x21
         ADD R0, R1, #0
         ADD R0, R0, R3
-        trap x21
+OUT3    trap x21
         LD R0, SITELINE 
         trap x22
-        LD R1, Save6
-        LD R0, Save7
 RENEW   BRnzp START
-    
+   
+HONOI   ADD R5, R5, #0
+        BRz RETURN1
+        ADD R5, R5, #-1
+        ADD R6, R6, #-1
+        STR R7, R6, #0
+        JSR HONOI
+        LDR R0, R6, #0
+        ADD R6, R6, #1
+        LDR R7, R6, #0
+        ADD R6, R6, #1
+        ADD R0, R0, R0
+        ADD R0, R0, #1
+        ADD R6, R6, #-1
+        STR R0, R6, #0
+        RET
+RETURN1 ADD R0, R0, #0
+        ADD R6, R6, #-1
+        STR R0, R6, #0
+        RET
+        
+ 
 
         
 DELAY   ST R1, Save1
@@ -109,13 +118,11 @@ SITEH       .FILL StrH
 SITELINE    .FILL RELINE
 DONE2   .FILL x3FFF    
 Save1   .BLKW   1
-Save6   .BLKW 1
-Save7   .BLKW 1
+
 COUNT   .FILL   5000
 KBDR    .FILL xFE02
 KBSR1    .FILL xFE00
-DSR     .FILL xFE04
-DDR     .FILL xFE06
+STACK   .FILL x4100
 StuNum .STRINGZ "PB20061376\n"
 StrH    .STRINGZ "HONOI move(s): "
 RELINE  .STRINGZ "\n"
@@ -144,13 +151,13 @@ HONOI_N .FILL xFFFF
         LD R2, JUDGE1
         ADD R1, R3, R2
         BRn NOTDEC
-DEC     ST R3, HONIOM 
+DEC     ST R1, HONIOM 
         ADD R4, R4, #1
         ADD R0, R3, #0
         trap x21
-        ADD R3, R3, R2
         LD R0, SITE1
         trap x22
+        ADD R3, R1, #0
         BRnzp RETURN
 NOTDEC  ADD R0, R3, #0
         trap x21
@@ -181,7 +188,6 @@ SNOTDEC .STRINGZ " is not a decimal number \n"
 Save2   .BLKW 1
 Save3   .BLKW 1
 Save4   .BLKW 1
-Save5   .BLKW 1
 PSR1     .FILL x8002
 PC1      .FILL x3005
 
