@@ -144,7 +144,8 @@ HONOI_N .FILL xFFFF
         LD R2, JUDGE1
         ADD R1, R3, R2
         BRn NOTDEC
-DEC     ADD R4, R4, #1
+DEC     ST R3, HONIOM 
+        ADD R4, R4, #1
         ADD R0, R3, #0
         trap x21
         ADD R3, R3, R2
@@ -172,6 +173,7 @@ JUDGE2  .FILL #-58
 DSR1     .FILL xFE04   
 DDR1     .FILL xFE06
 KBDR1    .FILL xFE02
+HONIOM   .FILL x3FFF
 SITE1   .FILL SDEC
 SITE2   .FILL SNOTDEC
 SDEC    .STRINGZ " is a decimal number \n"
