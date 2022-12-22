@@ -1,4 +1,4 @@
-        .ORIG x800
+.ORIG x800
         ; (1) Initialize interrupt vector table.
         LD R0, VEC
         LD R1, ISR
@@ -38,7 +38,6 @@ START   LD R0, SITESTU
         JSR DELAY
 DONE1   LDI R2, KBSR1
         BRzp START
-        LDI R3, KBDR
         LEA R7, #1
         JSR DELAY
 DONE3   ADD R4, R4, #0
@@ -117,8 +116,8 @@ KBDR    .FILL xFE02
 KBSR1    .FILL xFE00
 DSR     .FILL xFE04
 DDR     .FILL xFE06
-StuNum .STRINGZ "20061376\n"
-StrH    .STRINGZ "HONOI : "
+StuNum .STRINGZ "PB20061376\n"
+StrH    .STRINGZ "HONOI move(s): "
 RELINE  .STRINGZ "\n"
         ; *** End user program code here ***
         .END
@@ -137,6 +136,7 @@ HONOI_N .FILL xFFFF
         ST R0, Save2
         ST R1, Save3
         ST R2, Save4
+        LDI R3, KBDR1
         AND R4, R4, #0
         LD R2, JUDGE2
         ADD R1, R3, R2
@@ -156,7 +156,7 @@ NOTDEC  ADD R0, R3, #0
         LD R0, SITE2
         trap x22
 RETURN  AND R0, R0, #0
-        ST R0, KBDR1
+        STI R0, KBDR1
         LD R0, PSR1
         ADD R6, R6, #-1
         STR R0, R6, #0
@@ -181,7 +181,7 @@ Save3   .BLKW 1
 Save4   .BLKW 1
 Save5   .BLKW 1
 PSR1     .FILL x8002
-PC1      .FILL x3007
+PC1      .FILL x3005
 
         ; *** End interrupt service routine code here ***
         .END
