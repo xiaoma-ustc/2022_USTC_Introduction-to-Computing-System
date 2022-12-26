@@ -78,6 +78,7 @@ OUT2    trap x21
 OUT3    trap x21
         LD R0, SITELINE 
         trap x22
+        HALT
 RENEW   BRnzp START
    
 HONOI   ADD R5, R5, #0
