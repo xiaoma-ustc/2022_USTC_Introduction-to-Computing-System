@@ -77,10 +77,10 @@
     \BlankLine
     num\_a = 0\;
     num\_b = 0\;
-    \For(){$i = 0; i < 16; ++i$}{
+    \For(){$i = 16; i >= 0; --i$}{
         max = i\;
-        j = i\;
-        \For(){$;j < 16; ++j$}{
+        j = i - 1\;
+        \For(){$;j >= 0; --j$}{
             \If(){score[max] < score[j]}{
                 max = j;
             }
